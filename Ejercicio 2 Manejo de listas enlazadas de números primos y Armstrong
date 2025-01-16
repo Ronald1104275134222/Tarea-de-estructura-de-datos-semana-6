@@ -1,0 +1,161 @@
+using System;
+
+class Node
+{
+    public int Data { get; set; }
+    public Node Next { get; set; }
+
+    public Node(int data)
+    {
+        Data = data;
+        Next = null;
+    }
+}
+
+class LinkedList
+{
+    private Node head;
+    private int count;
+
+    public void AddToEnd(int data)
+    {
+        Node newNode = new Node(data);
+        if (head == null)
+        {
+            head = newNode;
+        }
+        else
+        {
+            Node current = head;
+            while (current.Next != null)
+            {
+                current = current.Next;
+            }
+            current.Next = newNode;
+        }
+        count++;
+    }
+
+    public void AddToStart(int data)
+    {
+        Node newNode = new Node(data);
+        newNode.Next = head;
+        head = newNode;
+        count++;
+    }
+
+    public int Count => count;
+
+    public void Print()
+    {
+        if (head == null)
+        {
+            Console.WriteLine("La lista está vacía.");
+            return;
+        }
+
+        Node current = head;
+        while (current != null)
+        {
+            Console.Write(current.Data + " -> ");
+            current = current.Next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+class Program
+{
+    static bool IsPrime(int number)
+    {
+        if (number <= 1) return false;
+        for (int i = 2; i <= Math.Sqrt(number); i++)
+        {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+
+    static bool IsArmstrong(int number)
+    {
+        int sum = 0, temp = number, digits = number.ToString().Length;
+        while (temp > 0)
+        {
+            int digit = temp % 10;
+            sum += (int)Math.Pow(digit, digits);
+            temp /= 10;
+        }
+        return sum == number;
+    }
+
+    static void Main(string[] args)
+    {
+        LinkedList primeList = new LinkedList();
+        LinkedList armstrongList = new LinkedList();
+
+        int option;
+        do
+        {
+            Console.WriteLine("\n1. Agregar número\n2. Mostrar conteo de elementos\n3. Mostrar lista con más elementos\n4. Mostrar todos los elementos\n5. Salir");
+            Console.Write("Seleccione una opción: ");
+            option = int.Parse(Console.ReadLine());
+
+            switch (option)
+            {
+                case 1:
+                    Console.Write("Ingrese un número: ");
+                    int number = int.Parse(Console.ReadLine());
+                    if (IsPrime(number))
+                    {
+                        primeList.AddToEnd(number);
+                        Console.WriteLine("Número agregado a la lista de primos.");
+                    }
+                    if (IsArmstrong(number))
+                    {
+                        armstrongList.AddToStart(number);
+                        Console.WriteLine("Número agregado a la lista de Armstrong.");
+                    }
+                    if (!IsPrime(number) && !IsArmstrong(number))
+                    {
+                        Console.WriteLine("El número no es primo ni Armstrong.");
+                    }
+                    break;
+
+                case 2:
+                    Console.WriteLine($"Lista de primos: {primeList.Count} elementos.");
+                    Console.WriteLine($"Lista de Armstrong: {armstrongList.Count} elementos.");
+                    break;
+
+                case 3:
+                    if (primeList.Count > armstrongList.Count)
+                    {
+                        Console.WriteLine("La lista de primos tiene más elementos.");
+                    }
+                    else if (armstrongList.Count > primeList.Count)
+                    {
+                        Console.WriteLine("La lista de Armstrong tiene más elementos.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ambas listas tienen la misma cantidad de elementos.");
+                    }
+                    break;
+
+                case 4:
+                    Console.WriteLine("\nLista de números primos:");
+                    primeList.Print();
+                    Console.WriteLine("\nLista de números Armstrong:");
+                    armstrongList.Print();
+                    break;
+
+                case 5:
+                    Console.WriteLine("Saliendo del programa.");
+                    break;
+
+                default:
+                    Console.WriteLine("Opción no válida.");
+                    break;
+            }
+        } while (option != 5);
+    }
+}
