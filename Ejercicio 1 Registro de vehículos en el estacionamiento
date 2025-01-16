@@ -1,0 +1,187 @@
+using System;
+
+class Vehicle
+{
+    public string Plate { get; set; }
+    public string Brand { get; set; }
+    public string Model { get; set; }
+    public int Year { get; set; }
+    public decimal Price { get; set; }
+    public Vehicle Next { get; set; }
+
+    public Vehicle(string plate, string brand, string model, int year, decimal price)
+    {
+        Plate = plate;
+        Brand = brand;
+        Model = model;
+        Year = year;
+        Price = price;
+        Next = null;
+    }
+}
+
+class VehicleList
+{
+    private Vehicle head;
+
+    public void AddVehicle(string plate, string brand, string model, int year, decimal price)
+    {
+        Vehicle newVehicle = new Vehicle(plate, brand, model, year, price);
+        if (head == null)
+        {
+            head = newVehicle;
+        }
+        else
+        {
+            Vehicle current = head;
+            while (current.Next != null)
+            {
+                current = current.Next;
+            }
+            current.Next = newVehicle;
+        }
+        Console.WriteLine("Vehículo agregado con éxito.");
+    }
+
+    public void SearchVehicle(string plate)
+    {
+        Vehicle current = head;
+        while (current != null)
+        {
+            if (current.Plate == plate)
+            {
+                Console.WriteLine($"Vehículo encontrado: {current.Brand} {current.Model}, Año: {current.Year}, Precio: {current.Price}");
+                return;
+            }
+            current = current.Next;
+        }
+        Console.WriteLine("Vehículo no encontrado.");
+    }
+
+    public void ViewVehiclesByYear(int year)
+    {
+        Vehicle current = head;
+        bool found = false;
+        while (current != null)
+        {
+            if (current.Year == year)
+            {
+                Console.WriteLine($"{current.Plate}: {current.Brand} {current.Model}, Precio: {current.Price}");
+                found = true;
+            }
+            current = current.Next;
+        }
+        if (!found)
+            Console.WriteLine("No hay vehículos registrados para ese año.");
+    }
+
+    public void ViewAllVehicles()
+    {
+        Vehicle current = head;
+        if (current == null)
+        {
+            Console.WriteLine("No hay vehículos registrados.");
+            return;
+        }
+        Console.WriteLine("Vehículos registrados:");
+        while (current != null)
+        {
+            Console.WriteLine($"{current.Plate}: {current.Brand} {current.Model}, Año: {current.Year}, Precio: {current.Price}");
+            current = current.Next;
+        }
+    }
+
+    public void DeleteVehicle(string plate)
+    {
+        if (head == null)
+        {
+            Console.WriteLine("La lista está vacía.");
+            return;
+        }
+
+        if (head.Plate == plate)
+        {
+            head = head.Next;
+            Console.WriteLine("Vehículo eliminado con éxito.");
+            return;
+        }
+
+        Vehicle current = head;
+        while (current.Next != null && current.Next.Plate != plate)
+        {
+            current = current.Next;
+        }
+
+        if (current.Next != null)
+        {
+            current.Next = current.Next.Next;
+            Console.WriteLine("Vehículo eliminado con éxito.");
+        }
+        else
+        {
+            Console.WriteLine("Vehículo no encontrado.");
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        VehicleList vehicleList = new VehicleList();
+        int option;
+        do
+        {
+            Console.WriteLine("\n1. Agregar vehículo\n2. Buscar vehículo por placa\n3. Ver vehículos por año\n4. Ver todos los vehículos registrados\n5. Eliminar vehículo\n6. Salir");
+            Console.Write("Elija una opción: ");
+            option = int.Parse(Console.ReadLine());
+
+            switch (option)
+            {
+                case 1:
+                    Console.Write("Ingrese la placa: ");
+                    string plate = Console.ReadLine();
+                    Console.Write("Ingrese la marca: ");
+                    string brand = Console.ReadLine();
+                    Console.Write("Ingrese el modelo: ");
+                    string model = Console.ReadLine();
+                    Console.Write("Ingrese el año: ");
+                    int year = int.Parse(Console.ReadLine());
+                    Console.Write("Ingrese el precio: ");
+                    decimal price = decimal.Parse(Console.ReadLine());
+                    vehicleList.AddVehicle(plate, brand, model, year, price);
+                    break;
+
+                case 2:
+                    Console.Write("Ingrese la placa del vehículo a buscar: ");
+                    plate = Console.ReadLine();
+                    vehicleList.SearchVehicle(plate);
+                    break;
+
+                case 3:
+                    Console.Write("Ingrese el año para ver los vehículos: ");
+                    year = int.Parse(Console.ReadLine());
+                    vehicleList.ViewVehiclesByYear(year);
+                    break;
+
+                case 4:
+                    vehicleList.ViewAllVehicles();
+                    break;
+
+                case 5:
+                    Console.Write("Ingrese la placa del vehículo a eliminar: ");
+                    plate = Console.ReadLine();
+                    vehicleList.DeleteVehicle(plate);
+                    break;
+
+                case 6:
+                    Console.WriteLine("Saliendo del programa.");
+                    break;
+
+                default:
+                    Console.WriteLine("Opción no válida.");
+                    break;
+            }
+        } while (option != 6);
+    }
+}
